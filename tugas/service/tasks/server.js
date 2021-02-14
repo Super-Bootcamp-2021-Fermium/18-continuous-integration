@@ -108,4 +108,5 @@ module.exports = {
   run,
   stop,
   cors,
+  server,
 };

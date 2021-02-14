@@ -7,7 +7,7 @@ const { WorkerSchema } = require('./worker/worker.model');
 const workerServer = require('./worker/server');
 const tasksServer = require('./tasks/server');
 const performanceServer = require('./performance/server');
-const { config } = require('./config');
+const { config, configs } = require('./config');
 
 async function init() {
   try {
@@ -20,7 +20,7 @@ async function init() {
   }
   try {
     console.log('connect to object storage');
-    await storage.connect('task-manager', config.minio);
+    await storage.connect('task-manager', configs.minio);
     console.log('object storage connected');
   } catch (err) {
     console.error('object storage connection failed');

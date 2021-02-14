@@ -3,3 +3,5 @@ node_modules
 *.db
 file-storage
 .tmrc
+.minio.sys
+task-manager

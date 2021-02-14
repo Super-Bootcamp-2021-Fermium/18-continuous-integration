@@ -1,4 +1,5 @@
 const { getConnection } = require('typeorm');
+const { Task } = require('./task.model');
 const workerClient = require('./worker.client');
 const bus = require('../lib/bus');
 
@@ -57,11 +58,29 @@ function list() {
   return taskRepo.find({ relations: ['assignee'] });
 }
 
+async function truncate() {
+  const entities = getConnection().entityMetadatas;
+
+  for (const entity of entities) {
+    const repository = await getConnection().getRepository(entity.name); // Get repository
+    try {
+      // change clear to delete for reference table issue
+
+      await repository.delete({}); // Clear each entity table's content
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+  return true;
+}
+
 module.exports = {
   add,
   done,
   cancel,
   list,
+  truncate,
   ERROR_TASK_DATA_INVALID,
   ERROR_TASK_NOT_FOUND,
 };
