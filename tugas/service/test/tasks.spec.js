@@ -47,9 +47,7 @@ function req(options, form = null) {
 }
 
 describe('Task Service', () => {
-  let connDB;
-  let connStorage;
-  let connBus;
+  let connection;
 
   const dataWorker = {
     address: 'bekasi',
@@ -60,9 +58,26 @@ describe('Task Service', () => {
   };
 
   beforeAll(async () => {
-    connDB = await db.connect([WorkerSchema, TaskSchema], config.database);
-    connStorage = await storage.connect('attachment', config.minio);
-    connBus = await bus.connect();
+    try {
+      connection = await db.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
+    } catch (err) {
+      console.error('database connection failed');
+    }
+
+    try {
+      await storage.connect('attachment', config.minio);
+    } catch (err) {
+      console.error('object storage connection failed');
+    }
+
+    try {
+      await bus.connect();
+    } catch (err) {
+      console.error('message bus connection failed');
+    }
     server.run();
   });
 
@@ -102,9 +117,8 @@ describe('Task Service', () => {
   afterAll(async () => {
     await truncate();
     await worker.truncate();
-    await connDB.close();
-    await connStorage.close();
-    await connBus.close();
+    await connection.close();
+    bus.close();
     server.stop();
   });
 
