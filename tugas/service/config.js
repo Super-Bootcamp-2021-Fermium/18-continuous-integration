@@ -15,7 +15,7 @@ const defaultConfig = {
     performance_port: 82,
   },
   minio: {
-    endPoint: 'localhost',
+    endPoint: '127.0.0.1',
     port: 9000,
     useSSL: false,
     accessKey: 'minioadmin',
